@@ -2,7 +2,7 @@
 /*************************************************************************************
  RamsesReserve BPS altering contract
  Author(s): DOG @RAMSES Exchange on Arbitrum One
- Description: Reserve contract to montior and adjust dynamic fees according to
+ Description: Reserve contract to monitor and adjust dynamic fees according to
  market volatility and as outlined in the Ramses official documentation
 *************************************************************************************/
 
