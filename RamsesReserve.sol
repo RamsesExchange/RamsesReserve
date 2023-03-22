@@ -104,7 +104,7 @@ contract RamsesReserve {
     /**********************************************************************************/
 
     //@Manager Hikes the rate of a pair
-    function rateHike(address[] calldata _pair, uint256 _bps) external onlyRatesManager {
+    function rateHike(address[] calldata _pair, uint256 _bps) external onlyRatesManager whileNotPaused {
         require(_bps <= MAX_BPS, "The bps cannot be over the MAX_BPS");
         for (uint256 i = 0; i < _pair.length; ++i) {
             require(factory.pairFee(_pair[i]) < _bps, "You can only hike upwards");
