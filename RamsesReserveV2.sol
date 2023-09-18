@@ -13,9 +13,6 @@ contract RamsesReserveV2 {
     uint256 public constant MAX_BPS_V1 = 500; //Max fee of 500bps = 5%
     uint24 public constant MAX_BPS_V2 = 100_000; // Max fee of 10%
 
-    address private pairFactoryV1;
-    address private pairFactoryV2;
-
     IPairFactory public factoryV1;
     IRamsesV2Factory public factoryV2;
 
@@ -33,7 +30,7 @@ contract RamsesReserveV2 {
         _;
     }
 
-    /// @notice Only authorized parties
+    /// @notice Only authorized parties (multisig + rateManager)
     modifier onlyAuth() {
         require(
             msg.sender == rateManager || msg.sender == multisig,
@@ -43,13 +40,11 @@ contract RamsesReserveV2 {
     }
 
     constructor(
-        address _multisig,
         address _pairFactory,
         address _pairFactoryV2
     ) {
-        multisig = _multisig;
+        multisig = 0x20D630cF1f5628285BfB91DfaC8C89eB9087BE1A;
         rateManager = msg.sender;
-        pairFactoryV1 = _pairFactory;
         factoryV1 = IPairFactory(_pairFactory);
         factoryV2 = IRamsesV2Factory(_pairFactoryV2);
     }
@@ -65,8 +60,8 @@ contract RamsesReserveV2 {
         multisig = _newMultisig;
     }
 
-    /// @notice Returns the fee management for V1/V2 back to the ramsesMultisig
-    function setFeeManagerBackToMultisig() external onlyRamsesMultisig {
+    /// @notice Returns the rate manager access for V1 + V2 back to the ramsesMultisig
+    function setRateManagerBackToMultisig() external onlyRamsesMultisig {
         factoryV1.setFeeManager(multisig);
         factoryV2.setFeeSetter(multisig);
     }
