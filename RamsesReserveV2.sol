@@ -9,13 +9,16 @@ import "./interfaces/IRamsesV2PoolImmutables.sol";
 contract RamsesReserveV2 {
     address public multisig;
     address public rateManager;
-    bool public isPaused;
+
     uint256 public constant MAX_BPS_V1 = 500; //Max fee of 500bps = 5%
     uint256 public constant MAX_BPS_V2 = 100_000; // Max fee of 10%
+
     address private pairFactoryV1;
     address private pairFactoryV2;
+
     IPairFactory public factoryV1;
     IRamsesV2Factory public factoryV2;
+
     event feeChangeV1(address _pair, uint256 _newrate);
     event feeChangeV2(address _pair, uint256 _newrate);
     event newGlobalVolatileFee(uint256 _newBps);
@@ -57,6 +60,7 @@ contract RamsesReserveV2 {
     }
 
     /// @notice ONLY to call if the multisig is moving
+    /// @param _newMultisig is the new multisig address
     function changeMultisig(address _newMultisig) external onlyRamsesMultisig {
         multisig = _newMultisig;
     }
@@ -68,10 +72,11 @@ contract RamsesReserveV2 {
     }
 
     /// @notice Sets the RateManager address
+    /// @param _rateManager is the new rateManager variable
     function setNewRateManager(
-        address _RateManager
+        address _rateManager
     ) external onlyRamsesMultisig {
-        rateManager = _RateManager;
+        rateManager = _rateManager;
     }
 
     /// @notice changes the Fee of a V1 pair
@@ -105,6 +110,7 @@ contract RamsesReserveV2 {
     }
 
     /// @notice Changes the fees of all CorrelatedPairs
+    /// @param _bps is the global fee to change the correlated pairs to
     function changeDefaultCorrelated(uint256 _bps) external onlyAuth {
         require(_bps <= MAX_BPS_V1 && _bps > 0);
         factoryV1.setFee(true, _bps);
@@ -112,6 +118,7 @@ contract RamsesReserveV2 {
     }
 
     /// @notice Changes the fees of all volatile pairs
+    /// @param _bps is the global fee to change the volatile pairs to
     function changeDefaultVolatile(uint256 _bps) external onlyAuth {
         require(_bps <= MAX_BPS_V1 && _bps > 0);
         factoryV1.setFee(false, _bps);
