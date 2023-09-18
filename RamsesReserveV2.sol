@@ -11,7 +11,7 @@ contract RamsesReserveV2 {
     address public rateManager;
 
     uint256 public constant MAX_BPS_V1 = 500; //Max fee of 500bps = 5%
-    uint256 public constant MAX_BPS_V2 = 100_000; // Max fee of 10%
+    uint24 public constant MAX_BPS_V2 = 100_000; // Max fee of 10%
 
     address private pairFactoryV1;
     address private pairFactoryV2;
