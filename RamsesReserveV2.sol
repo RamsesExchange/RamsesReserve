@@ -23,26 +23,17 @@ contract RamsesReserveV2 {
 
     /// @notice Ensures only the Ramses Multisig can interact
     modifier onlyRamsesMultisig() {
-        require(
-            msg.sender == multisig,
-            "only the Ramses multisig can perform this function"
-        );
+        require(msg.sender == multisig, "!multisig");
         _;
     }
 
     /// @notice Only authorized parties (multisig + rateManager)
     modifier onlyAuth() {
-        require(
-            msg.sender == rateManager || msg.sender == multisig,
-            "Only authorized users can call this function"
-        );
+        require(msg.sender == rateManager || msg.sender == multisig, "!auth");
         _;
     }
 
-    constructor(
-        address _pairFactory,
-        address _pairFactoryV2
-    ) {
+    constructor(address _pairFactory, address _pairFactoryV2) {
         multisig = 0x20D630cF1f5628285BfB91DfaC8C89eB9087BE1A;
         rateManager = msg.sender;
         factoryV1 = IPairFactory(_pairFactory);
@@ -98,7 +89,6 @@ contract RamsesReserveV2 {
     ) external onlyAuth {
         for (uint256 i = 0; i < _pair.length; ++i) {
             require((_fee[i] > 0) && (_fee[i] <= MAX_BPS_V2), "!valid");
-            if (IRamsesV2PoolImmutables(_pair[i]).fee() == _fee[i]) continue;
             factoryV2.setFee(_pair[i], _fee[i]);
             emit feeChangeV2(_pair[i], _fee[i]);
         }
